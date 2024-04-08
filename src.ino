@@ -16,7 +16,7 @@
 MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 // Default text displayed
-String text = "HACK THE PLANET!!!";
+String text = "~~ HACK THE PLANET!!!";
 
 // WiFi credentials for accessing the web server
 const char* http_username = "admin";
@@ -59,8 +59,8 @@ void checkForNewConnections() {
 
 // Setup function runs once on device startup
 void setup() {
-  const char* ssid = "hackable-sign"; // WiFi network name (SSID)
-  const int max_connections = 2; // Maximum number of simultaneous connections
+  const char* ssid = "hack-this-sign"; // WiFi network name (SSID)
+  const int max_connections = 4; // Maximum number of simultaneous connections
 
   // Set the ESP8266 in Access Point (AP) mode
   // WiFi.softAP(ssid, passwd); // If you'd like to include a password for the AP
@@ -93,12 +93,6 @@ void setup() {
   // Route for serving the website homepage
   server.on("/", handleRoot);
 
-  // Route for opening submission form to change text
-  server.on("/matrixform", HTTP_GET, handleMatrixForm);
-
-  // Route for displaying the text changed page
-  server.on("/changetext", HTTP_POST, handleChangeText);
-
   // Start the web server
   server.begin();
 
@@ -125,72 +119,26 @@ void loop() {
 
 // Handler for the root page
 void handleRoot() {
-
-  // Get the current number of connected clients
-  int current_clients = WiFi.softAPgetStationNum();
-
-  // Check if there's a new device connection and update the unique_connections count
-  if (new_device_connected) {
-    new_device_connected = false;
-    unique_connections++;
-  }
-
-  String webpage = "<html><body>";
-  webpage += "<h1>Welcome, friend :)</h1>";
-  webpage += "<p>Current text displayed: </p>" + String(text);
-  webpage += "<p>Click <a href='/matrixform'>here</a> to submit newtext to the matrix display.</p>";
-  webpage += "<p>Number of unique connections since last reset: " + String(unique_connections) + "</p>";
-  webpage += "<p>Current number of connections: " + String(current_clients) + "</p>";
-  webpage += "<!-- routes: /matrixform /changetext -->";
-  webpage += "<!-- made by p0st -->";
-  webpage += "</body></html>";
-
-  // Send the HTML page as the response
-  server.send(200, "text/html", webpage);
-}
-
-
-
-// Handler for the matrix submission form page
-void handleMatrixForm() {
   // Check for authentication, and send an authentication request if user hasn't authenticated
   if (!server.authenticate(http_username, http_password)) {
     return server.requestAuthentication();
   }
 
-  String webpage = "<html><body>";
-  webpage += "<h1>Submit your text below to show it on the matrix display:</h1>";
-  webpage += "<form action='/changetext' method='post'>"; 
-  webpage += "New Text: <input type='text' name='newtext'>";
-  webpage += "<input type='submit' value='Change'>";
-  webpage += "</form></body></html>";
-
-  // Send the HTML page as the response
-  server.send(200, "text/html", webpage);
-}
-
-
-
-// Handler for changing the text on the LED matrix
-void handleChangeText() {
-  String webpage;
-  
-  // Check if the 'newtext' parameter is present in the POST request
   if (server.hasArg("newtext")) {
-    text = server.arg("newtext"); // Get the new text from the POST request
+    text = server.arg("newtext");
     Display.displayClear(); // Clear the display
     Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
-    webpage = "<html><body>";
-    webpage += "<h1>Text Changed Successfully!</h1>";
-    webpage += "<p>Click <a href='/matrixform'>here</a> to submit another text.</p>";
-    webpage += "</body></html>";
-  } else {
-    // If 'newtext' parameter is missing, show an error message
-    webpage = "<html><body>";
-    webpage += "<h1>Error: No text provided.</h1>";
-    webpage += "<p>Click <a href='/matrixform'>here</a> to go back and submit a text.</p>";
-    webpage += "</body></html>";
   }
+
+  String webpage = "<html><body>";
+  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
+  webpage += "<form action='/' method='post'>"; 
+  webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
+  webpage += "<input type='submit' value='Change'>";
+  webpage += "</form>";
+  webpage += "<p>Current text displayed: " + text + "</p>";
+  webpage += "<!-- made by p0st with <3 -->";
+  webpage += "</body></html>";
 
   // Send the HTML page as the response
   server.send(200, "text/html", webpage);
