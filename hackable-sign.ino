@@ -23,7 +23,6 @@ const char* http_username = "admin";
 const char* http_password = "31337";
 
 
-
 ESP8266WebServer server(80);
 
 // WiFi network settings for the Access Point (AP) mode
@@ -55,6 +54,33 @@ void checkForNewConnections() {
   }
 }
 
+
+// Handler for the root page
+void handleRoot() {
+  // Check for authentication, and send an authentication request if user hasn't authenticated
+  if (!server.authenticate(http_username, http_password)) {
+    return server.requestAuthentication();
+  }
+
+  if (server.hasArg("newtext")) {
+    text = server.arg("newtext");
+    Display.displayClear(); // Clear the display
+    Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
+  }
+
+  String webpage = "<html><body>";
+  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
+  webpage += "<form action='/' method='post'>"; 
+  webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
+  webpage += "<input type='submit' value='Change'>";
+  webpage += "</form>";
+  webpage += "<p>Current text displayed: " + text + "</p>";
+  webpage += "<!-- made by p0st with <3 -->";
+  webpage += "</body></html>";
+
+  // Send the HTML page as the response
+  server.send(200, "text/html", webpage);
+}
 
 
 // Setup function runs once on device startup
@@ -113,34 +139,5 @@ void loop() {
   if (Display.displayAnimate()) {
     Display.displayReset();
   }
-}
-
-
-
-// Handler for the root page
-void handleRoot() {
-  // Check for authentication, and send an authentication request if user hasn't authenticated
-  if (!server.authenticate(http_username, http_password)) {
-    return server.requestAuthentication();
-  }
-
-  if (server.hasArg("newtext")) {
-    text = server.arg("newtext");
-    Display.displayClear(); // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
-  }
-
-  String webpage = "<html><body>";
-  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
-  webpage += "<form action='/' method='post'>"; 
-  webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
-  webpage += "<input type='submit' value='Change'>";
-  webpage += "</form>";
-  webpage += "<p>Current text displayed: " + text + "</p>";
-  webpage += "<!-- made by p0st with <3 -->";
-  webpage += "</body></html>";
-
-  // Send the HTML page as the response
-  server.send(200, "text/html", webpage);
 }
 
