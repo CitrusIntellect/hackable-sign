@@ -11,6 +11,32 @@
 #define MAX_DEVICES 4
 #define CS_PIN 15
 
+/*
+  PA_PRINT,
+  PA_SCAN_HORIZ,
+  PA_SCROLL_LEFT,
+  PA_WIPE,
+  PA_SCROLL_UP_LEFT,
+  PA_SCROLL_UP,
+  PA_OPENING_CURSOR,
+  PA_GROW_UP,
+  PA_MESH,
+  PA_SCROLL_UP_RIGHT,
+  PA_BLINDS,
+  PA_CLOSING,
+  PA_RANDOM,
+  PA_GROW_DOWN,
+  PA_SCAN_VERT,
+  PA_SCROLL_DOWN_LEFT,
+  PA_WIPE_CURSOR,
+  PA_DISSOLVE,
+  PA_OPENING,
+  PA_CLOSING_CURSOR,
+  PA_SCROLL_DOWN_RIGHT,
+  PA_SCROLL_RIGHT,
+  PA_SLICE,
+  PA_SCROLL_DOWN,
+*/
 
 
 MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
@@ -21,7 +47,6 @@ String text = "~~ HACK THE PLANET!!!";
 // WiFi credentials for accessing the web server
 const char* http_username = "admin";
 const char* http_password = "31337";
-
 
 
 ESP8266WebServer server(80);
@@ -55,6 +80,33 @@ void checkForNewConnections() {
   }
 }
 
+
+// Handler for the root page
+void handleRoot() {
+  // Check for authentication, and send an authentication request if user hasn't authenticated
+  if (!server.authenticate(http_username, http_password)) {
+    return server.requestAuthentication();
+  }
+
+  if (server.hasArg("newtext")) {
+    text = server.arg("newtext");
+    Display.displayClear(); // Clear the display
+    Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
+  }
+
+  String webpage = "<html><body>";
+  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
+  webpage += "<form action='/' method='post'>"; 
+  webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
+  webpage += "<input type='submit' value='Change'>";
+  webpage += "</form>";
+  webpage += "<p>Current text displayed: " + text + "</p>";
+  webpage += "<!-- made by p0st with <3 -->";
+  webpage += "</body></html>";
+
+  // Send the HTML page as the response
+  server.send(200, "text/html", webpage);
+}
 
 
 // Setup function runs once on device startup
@@ -113,34 +165,5 @@ void loop() {
   if (Display.displayAnimate()) {
     Display.displayReset();
   }
-}
-
-
-
-// Handler for the root page
-void handleRoot() {
-  // Check for authentication, and send an authentication request if user hasn't authenticated
-  if (!server.authenticate(http_username, http_password)) {
-    return server.requestAuthentication();
-  }
-
-  if (server.hasArg("newtext")) {
-    text = server.arg("newtext");
-    Display.displayClear(); // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
-  }
-
-  String webpage = "<html><body>";
-  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
-  webpage += "<form action='/' method='post'>"; 
-  webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
-  webpage += "<input type='submit' value='Change'>";
-  webpage += "</form>";
-  webpage += "<p>Current text displayed: " + text + "</p>";
-  webpage += "<!-- made by p0st with <3 -->";
-  webpage += "</body></html>";
-
-  // Send the HTML page as the response
-  server.send(200, "text/html", webpage);
 }
 
