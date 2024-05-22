@@ -95,7 +95,7 @@ void handleRoot() {
   }
 
   String webpage = "<html><body>";
-  webpage += "<h1>WELCOME TO THE AZCWR WIRELESS SIGN</h1>";
+  webpage += "<h1>WELCOME TO THE HACKABLE WIRELESS SIGN</h1>";
   webpage += "<form action='/' method='post'>"; 
   webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
   webpage += "<input type='submit' value='Change'>";
