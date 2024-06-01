@@ -44,7 +44,7 @@ MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 // Default text displayed
 String text = "~~ HACK THE PLANET!!!";
 
-// WiFi credentials for accessing the web server
+// Web portal credentials
 const char* http_username = "admin";
 const char* http_password = "31337";
 
