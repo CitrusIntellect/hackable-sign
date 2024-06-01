@@ -47,4 +47,16 @@ The following table shows how to connect the pins on the MAX7219 display to the 
 ```
 
 ## Arduino Setup
-COMING SOON lol
+#### Add the ESP8266 board to the Arduino IDE (from https://github.com/esp8266/Arduino)
+- [Download and install Arduino IDE 1.x or 2.x](https://www.arduino.cc/en/software)
+- Start Arduino and open the Preferences window 
+- Enter ```https://arduino.esp8266.com/stable/package_esp8266com_index.json``` into the File>Preferences>Additional Boards Manager URLs field of the Arduino IDE. You can add multiple URLs, separating them with commas.
+- Open Boards Manager from Tools > Board menu and install esp8266 platform (and don't forget to select your ESP8266 board from Tools > Board menu after installation).
+
+#### Install libraries
+- In Arduino IDE go to Tools>Manage Libraries (CTRL + SHFT + I)
+- You will need to install two libraries: ```MD_MAX72xx``` and ```MD_Parola``` 
+- Search for ```MD_MAX72xx``` and install the library. 
+	- You will be asked if you want to install "ALL" dependencies. Select "Install ALL"
+	- If you do not select "Install ALL" you will need to also install the library ```MD_Parola``` 
+
