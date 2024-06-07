@@ -40,9 +40,9 @@
 */
 
 //Network Name (Please Change This)
-String networkName = "Hackable Microcontroller Sign";
+const char* networkName = "Hackable Microcontroller Sign";
 //Network Password (Please Change This)
-String networkAuth = "system76";
+const char* networkAuth = "system76";
 
 //Please Do Not Change This
 textEffect_t dirARR[] = {PA_SCROLL_RIGHT, PA_SCROLL_LEFT, PA_SCROLL_DOWN, PA_SCROLL_UP, PA_RANDOM};
@@ -102,7 +102,7 @@ void handleRoot() {
     speed = server.arg("newspeed").c_str();
     direction = server.arg("newdirection").toInt();
     Display.displayClear();                                             // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  // Scroll the new text
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[direction], speed.toInt());  // Scroll the new text
   }
 
   if (server.hasArg("newspeed")) {
@@ -110,7 +110,7 @@ void handleRoot() {
     text = server.arg("newtext");
     direction = server.arg("newdirection").toInt();
     Display.displayClear();                                             // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  //) Scroll the new text
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[direction], speed.toInt());  //) Scroll the new text
   }
 
   if (server.hasArg("directon")) {
@@ -118,11 +118,11 @@ void handleRoot() {
     text = server.arg("newtext");
     direction = server.arg("newdirection").toInt();
     Display.displayClear();                                             // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  // Scroll the new text
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[direction], speed.toInt());  // Scroll the new text
   }
 
   String webpage = "<html><body>";
-  webpage += "<h1>Elias' ESP8266 Sign Display</h1>";
+  webpage += "<h1>ESP8266 Sign Display Website</h1>";
   webpage += "<form action='/' method='post'>";
   webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
   webpage += "<input type='submit' value='Change'>";
