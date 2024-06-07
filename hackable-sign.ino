@@ -39,8 +39,9 @@
   PA_SCROLL_DOWN,
 */
 
-//Network Infomation (Please Change This)
+//Network Name (Please Change This)
 String networkName = "Hackable Microcontroller Sign";
+//Network Password (Please Change This)
 String networkAuth = "system76";
 
 //Please Do Not Change This
