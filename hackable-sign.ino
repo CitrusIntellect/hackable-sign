@@ -11,6 +11,7 @@
 #define MAX_DEVICES 4
 #define CS_PIN 15
 
+
 /*
   PA_PRINT,
   PA_SCAN_HORIZ,
@@ -38,15 +39,22 @@
   PA_SCROLL_DOWN,
 */
 
+//Network Infomation (Please Change This)
+String networkName = "Hackable Microcontroller Sign";
+String networkAuth = "system76";
 
+//Please Do Not Change This
+textEffect_t dirARR[] = {PA_SCROLL_RIGHT, PA_SCROLL_LEFT, PA_SCROLL_DOWN, PA_SCROLL_UP, PA_RANDOM};
 MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 // Default text displayed
-String text = "~~ HACK THE PLANET!!!";
+String text = "~~ Default I Guess ~~";
+String speed = "50";
+int direction = 1;
 
 // Web portal credentials
 const char* http_username = "admin";
-const char* http_password = "31337";
+const char* http_password = "raspberry";
 
 
 ESP8266WebServer server(80);
@@ -58,7 +66,7 @@ IPAddress subnet(255, 255, 255, 0);
 
 
 // Track the number of unique connections since last reset
-int unique_connections = 0; 
+int unique_connections = 0;
 bool new_device_connected = false;
 
 // Track the unique MAC addresses of connected clients
@@ -90,18 +98,44 @@ void handleRoot() {
 
   if (server.hasArg("newtext")) {
     text = server.arg("newtext");
-    Display.displayClear(); // Clear the display
-    Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50); // Scroll the new text
+    speed = server.arg("newspeed").c_str();
+    direction = server.arg("newdirection").toInt();
+    Display.displayClear();                                             // Clear the display
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  // Scroll the new text
+  }
+
+  if (server.hasArg("newspeed")) {
+    speed = server.arg("newspeed").c_str();
+    text = server.arg("newtext");
+    direction = server.arg("newdirection").toInt();
+    Display.displayClear();                                             // Clear the display
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  //) Scroll the new text
+  }
+
+  if (server.hasArg("directon")) {
+    speed = server.arg("newspeed").c_str();
+    text = server.arg("newtext");
+    direction = server.arg("newdirection").toInt();
+    Display.displayClear();                                             // Clear the display
+    Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[newdirection], speed.toInt());  // Scroll the new text
   }
 
   String webpage = "<html><body>";
-  webpage += "<h1>WELCOME TO THE HACKABLE WIRELESS SIGN</h1>";
-  webpage += "<form action='/' method='post'>"; 
+  webpage += "<h1>Elias' ESP8266 Sign Display</h1>";
+  webpage += "<form action='/' method='post'>";
   webpage += "New Text: <input type='text' name='newtext' value='" + text + "'>";
   webpage += "<input type='submit' value='Change'>";
+  webpage += "<form action='/' method='post'>";
+  webpage += "<p> </p>";
+  webpage += "New Speed: <input type='text' name='newspeed' value='" + speed + "'>";
+  webpage += "<input type='submit' value='Change'>";
+  webpage += "<p> </p>";
+  webpage += "<label for=direction>Choose The Direction:</label> <select name=newdirection> <option value= 0>Left_To_Right</option> <option value=1>Right_To_Left</option> <option value=4>Random</option> <option value=2>Top_To_Bottom <option value=3>Bottom_To_Top</option> </select> <input type='submit' value='Change'>";
   webpage += "</form>";
   webpage += "<p>Current text displayed: " + text + "</p>";
-  webpage += "<!-- made by p0st with <3 -->";
+  webpage += "<p>Current speed: " + speed + "</p>";
+ 
+  webpage += "<! Contributors: p0xt & CitrusLinux (CitrusIntellect)>";
   webpage += "</body></html>";
 
   // Send the HTML page as the response
@@ -111,8 +145,9 @@ void handleRoot() {
 
 // Setup function runs once on device startup
 void setup() {
-  const char* ssid = "hack-this-sign"; // WiFi network name (SSID)
-  const int max_connections = 4; // Maximum number of simultaneous connections
+  const char* ssid = networkName;                         // WiFi network name (SSID)
+  const char* password = networkAuth;
+  const int max_connections = 4;  // Maximum number of simultaneous connections
 
   // Set the ESP8266 in Access Point (AP) mode
   // WiFi.softAP(ssid, passwd); // If you'd like to include a password for the AP
@@ -127,7 +162,7 @@ void setup() {
 
   // Start the Access Point
   Serial.print("Setting soft-AP ... ");
-  Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
+  Serial.println(WiFi.softAP(ssid, password) ? "Ready" : "Failed!");
 
   // Print the Access Point IP address to the Serial Monitor
   Serial.print("Soft-AP IP address = ");
@@ -135,9 +170,9 @@ void setup() {
 
   // Initialize LED matrix display
   Display.begin();
-  Display.setIntensity(15); // Change brightness from 0 to 15
+  Display.setIntensity(15);  // Change brightness from 0 to 15
   Display.displayClear();
-  Display.displayScroll(text.c_str(), PA_RIGHT, PA_SCROLL_LEFT, 50);
+  Display.displayScroll(text.c_str(), PA_RIGHT, dirARR[0], speed.toInt());
 
 
   // ROUTES:
@@ -147,7 +182,6 @@ void setup() {
 
   // Start the web server
   server.begin();
-
 }
 
 
@@ -166,4 +200,3 @@ void loop() {
     Display.displayReset();
   }
 }
-
