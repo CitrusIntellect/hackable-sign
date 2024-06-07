@@ -12,6 +12,11 @@ NOTE: This project is intentionally insecure. It is meant to be hacked.
 - Computer with the Arduino IDE (or PlatformIO; however, the instructions below will use the Arduino IDE)
 - Wires
 
+## Audrino IDE requirements
+- Library MD_Parola
+- Library MD_MAX72XX
+- Additional Boards http://arduino.esp8266.com/stable/package_esp8266com_index.json
+
 ## Default settings:
 - SSID: hackable-sign
 - Web portal: http://192.168.4.1
