@@ -12,6 +12,11 @@ NOTE: This project is intentionally insecure. It is meant to be hacked.
 - Computer with the Arduino IDE (or PlatformIO; however, the instructions below will use the Arduino IDE)
 - Wires
 
+## Audrino IDE requirements
+- Library MD_Parola
+- Library MD_MAX72XX
+- Additional Boards http://arduino.esp8266.com/stable/package_esp8266com_index.json
+
 ## Default settings:
 - SSID: hackable-sign
 - Web portal: http://192.168.4.1
@@ -19,18 +24,20 @@ NOTE: This project is intentionally insecure. It is meant to be hacked.
 - Web portal password: 31337
 
 ## Variables you may want to change:
-On line 18 you can find the default text. This is the text that the device will display on boot. There is no persistence when you change the text from the web interface. 
-```String text = "HACK THE PLANET!!!";```
+On line 52 you can find the default text. This is the text that the device will display on boot. There is no persistence when you change the text from the web interface. 
+```String text = "~~ Default I Guess ~~";```
 
-On lines 22 and 23 you'll find the web console default credentials. There is no password to connect to the sign via WiFi. The credentials are only for when you actually try to change the text. 
+On lines 57 and 58 you'll find the web console default credentials. There is no password to connect to the sign via WiFi. The credentials are only for when you actually try to change the text. 
 ```const char* http_username = "admin";```
-```const char* http_password = "31337";```
+```const char* http_password = "raspberry";```
 
-On line 30 you'll find the IP address of the web interface. You should be able to change it to anything you want within the 192.168.4.0/24 range but this is not very important. The important thing to know is that this will be how you access the web interface to change the text. By default you'd go to http://192.168.4.1. 
+On line 64 you'll find the IP address of the web interface. You should be able to change it to anything you want within the 192.168.4.0/24 range but this is not very important. The important thing to know is that this will be how you access the web interface to change the text. By default you'd go to http://192.168.4.1. 
 ```IPAddress local_IP(192, 168, 4, 1);```
 
-Lastly on line 62 you can change the SSID. The default is "hackable-sign".
-```const char* ssid = "hackable-sign";```
+On line 43 you can change the SSID. The default is "Hackable Microcontroller Sign".
+```const char* ssid = "Hackable Microcontroller Sign";```
+
+And lastly on line 45 you can change the network password. The default is "system76".
 
 ## Connect MAX7219 to ESP8266
 The following table shows how to connect the pins on the MAX7219 display to the ESP8266 using wires. If the ESP8266 has pins pre-sodered you can use the female to female wires that typically come bundled with the MAX7219. 
