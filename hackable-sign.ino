@@ -136,7 +136,7 @@ void handleRoot() {
   webpage += "<p>Current text displayed: " + text + "</p>";
   webpage += "<p>Current speed: " + speed + "</p>";
  
-  webpage += "<! Contributors: p0xt & CitrusLinux (CitrusIntellect)>";
+  webpage += "<! Contributors: p0xt & CitrusIntellect>";
   webpage += "</body></html>";
 
   // Send the HTML page as the response
